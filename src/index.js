@@ -1,17 +1,48 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { createStore, bindActionCreators } from 'redux'
+import * as actions from './actions'
+import reducer from './reducer'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+let store = createStore(reducer)
+const { dispatch } = store;
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// const incDispatch = () => dispatch(setInc())
+// const decDispatch = () => dispatch(setDec())
+// const rndDispatch = (rndValue) => dispatch(setRnd(rndValue))
+
+// const bindActionCreator = (creator, dispatch) => (...args) => {
+//   dispatch(creator(...args));
+// }
+
+// const incDispatch = bindActionCreator(setInc, dispatch)
+// const decDispatch = bindActionCreator(setDec, dispatch)
+// const rndDispatch = bindActionCreator(setRnd, dispatch)
+
+// const incDispatch = bindActionCreators(setInc, dispatch)
+// const decDispatch = bindActionCreators(setDec, dispatch)
+// const rndDispatch = bindActionCreators(setRnd, dispatch)
+
+const { setInc, setDec, setRnd } = bindActionCreators(actions, dispatch)
+
+// --- Actions ---
+document
+  .getElementById('inc')
+  .addEventListener('click', () => setInc()) //Call cction INC (by dispatch({type: 'action')
+
+document
+  .getElementById('dec')
+  .addEventListener('click', () => setDec()) //Call action DEC (by dispatch({type: 'action'}))
+
+document
+  .getElementById('rnd')
+  .addEventListener('click', () => {
+    const rndValue = Math.floor(Math.random() * 10)
+    setRnd(rndValue)
+  }
+  ) //Call action RND (by dispatch({type: 'action'}))
+
+const update = () => {
+  document.getElementById('counter')
+    .innerHTML = store.getState()
+}
+
+store.subscribe(update) //If state is updated
